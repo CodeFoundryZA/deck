@@ -1,0 +1,17 @@
+#!/data/data/com.termux/files/usr/bin/sh
+# Persistent notification: shows current mode, doubles as the mode switcher.
+# Add a --buttonN per mode that deserves one-tap access. Android allows three.
+
+. "$HOME/.deck/lib/common.sh"
+
+MODE=$(deck_mode)
+BATT=$(termux-battery-status 2>/dev/null | jq -r '.percentage // "?"')
+
+termux-notification \
+    --id deck \
+    --ongoing \
+    --alert-once \
+    --priority low \
+    --title "$DECK_NAME: $MODE" \
+    --content "battery ${BATT}%" \
+    --button1 "Refresh" --button1-action "$HOME/.deck/notify"

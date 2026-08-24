@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="2340" viewBox="0 0 1080 2340">
+  <!--
+    DECK-01 wallpaper.
+    Concept: the layer model from DESIGN.md drawn as a technical elevation.
+    A tall stack on a tall canvas. Each band carries what actually lives in
+    that layer, so it reads as a drawing rather than a label.
+    Pure black ground: AMOLED leaves those pixels unlit.
+  -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="#6b7a8a" opacity="0.055"/>
+    </pattern>
+    <radialGradient id="pulse" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#ff9d3d" stop-opacity="0.45"/>
+      <stop offset="55%"  stop-color="#ff9d3d" stop-opacity="0.11"/>
+      <stop offset="100%" stop-color="#ff9d3d" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1080" height="2340" fill="#000000"/>
+  <rect width="1080" height="2340" fill="url(#grid)"/>
+
+  <!-- ═══ status indicator: the one warm point in a cool composition ═══ -->
+  <circle cx="148" cy="690" r="36" fill="url(#pulse)"/>
+  <circle cx="148" cy="690" r="6" fill="#ff9d3d" fill-opacity="0.95"/>
+  <text x="210" y="697" font-family="JetBrainsMono Nerd Font, DejaVu Sans Mono, monospace"
+        font-size="19" letter-spacing="6" fill="#ff9d3d" fill-opacity="0.42">ALWAYS ON</text>
+
+  <!-- ═══ spine ═══ -->
+  <line x1="148" y1="736" x2="148" y2="1356" stroke="#6b7a8a" stroke-opacity="0.26" stroke-width="1.5"/>
+  <line x1="148" y1="1400" x2="148" y2="1636" stroke="#6b7a8a" stroke-opacity="0.13" stroke-width="1.5"
+        stroke-dasharray="2 13"/>
+
+  <!-- ═══ layer 1 · ANDROID ═══ -->
+  <g>
+    <line x1="148" y1="780" x2="188" y2="780" stroke="#6b7a8a" stroke-opacity="0.45" stroke-width="1.5"/>
+    <text x="210" y="788" font-family="JetBrainsMono Nerd Font, DejaVu Sans Mono, monospace"
+          font-size="28" letter-spacing="7" fill="#ece8e1" fill-opacity="0.62">ANDROID</text>
+    <text x="932" y="788" text-anchor="end" font-family="JetBrainsMono Nerd Font, DejaVu Sans Mono, monospace"
+          font-size="22" letter-spacing="3" fill="#6b7a8a" fill-opacity="0.60">hardware</text>
+    <text x="210" y="828" font-family="JetBrainsMono Nerd Font, DejaVu Sans Mono, monospace"
+          font-size="20" letter-spacing="2" fill="#6b7a8a" fill-opacity="0.34">camera · mic · gps · modem · radios</text>
+    <line x1="210" y1="856" x2="932" y2="856" stroke="#6b7a8a" stroke-opacity="0.30" stroke-width="1.5"/>
+  </g>
+
+  <!-- ═══ layer 2 · TERMUX ═══ -->
+  <g>
+    <line x1="148" y1="1030" x2="188" y2="1030" stroke="#6b7a8a" stroke-opacity="0.45" stroke-width="1.5"/>
+    <text x="210" y="1038" font-family="JetBrainsMono Nerd Font, DejaVu Sans Mono, monospace"
+          font-size="28" letter-spacing="7" fill="#ece8e1" fill-opacity="0.62">TERMUX</text>
+    <text x="932" y="1038" text-anchor="end" font-family="JetBrainsMono Nerd Font, DejaVu Sans Mono, monospace"
+          font-size="22" letter-spacing="3" fill="#6b7a8a" fill-opacity="0.60">reach</text>
+    <text x="210" y="1078" font-family="JetBrainsMono Nerd Font, DejaVu Sans Mono, monospace"
+          font-size="20" letter-spacing="2" fill="#6b7a8a" fill-opacity="0.34">sshd · tailscale · wake lock · state</text>
+    <line x1="210" y1="1106" x2="932" y2="1106" stroke="#6b7a8a" stroke-opacity="0.30" stroke-width="1.5"/>
+  </g>
+
+  <!-- ═══ layer 3 · DEBIAN ═══ -->
+  <g>
+    <line x1="148" y1="1280" x2="188" y2="1280" stroke="#6b7a8a" stroke-opacity="0.45" stroke-width="1.5"/>
+    <text x="210" y="1288" font-family="JetBrainsMono Nerd Font, DejaVu Sans Mono, monospace"
+          font-size="28" letter-spacing="7" fill="#ece8e1" fill-opacity="0.62">DEBIAN</text>
+    <text x="932" y="1288" text-anchor="end" font-family="JetBrainsMono Nerd Font, DejaVu Sans Mono, monospace"
+          font-size="22" letter-spacing="3" fill="#6b7a8a" fill-opacity="0.60">logic</text>
+    <text x="210" y="1328" font-family="JetBrainsMono Nerd Font, DejaVu Sans Mono, monospace"
+          font-size="20" letter-spacing="2" fill="#6b7a8a" fill-opacity="0.34">services · analysis · scripts</text>
+    <line x1="210" y1="1356" x2="932" y2="1356" stroke="#6b7a8a" stroke-opacity="0.30" stroke-width="1.5"/>
+  </g>
+
+  <!-- ═══ identity block ═══ -->
+  <line x1="148" y1="1680" x2="932" y2="1680" stroke="#6b7a8a" stroke-opacity="0.38" stroke-width="1.5"/>
+
+  <text x="148" y="1792" font-family="JetBrainsMono Nerd Font, DejaVu Sans Mono, monospace"
+        font-size="80" font-weight="bold" letter-spacing="9"
+        fill="#ece8e1" fill-opacity="0.94">DECK-01</text>
+
+  <text x="148" y="1854" font-family="JetBrainsMono Nerd Font, DejaVu Sans Mono, monospace"
+        font-size="28" letter-spacing="2" fill="#6b7a8a" fill-opacity="0.78">ssh -p 8022</text>
+
+  <text x="932" y="1854" text-anchor="end" font-family="JetBrainsMono Nerd Font, DejaVu Sans Mono, monospace"
+        font-size="20" letter-spacing="3" fill="#6b7a8a" fill-opacity="0.42">A34 · 5000mAh · LTE</text>
+</svg>

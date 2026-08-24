@@ -1,0 +1,12 @@
+#!/data/data/com.termux/files/usr/bin/sh
+# base: resting. Nothing running but the things that are always running.
+# Template for every other mode. Keep the four-step shape:
+#   stop others -> set state -> start mine -> notify
+
+. "$HOME/.deck/lib/common.sh"
+
+mode_enter base
+
+# (no mode-specific services: base IS the always-on set)
+
+notify_update
