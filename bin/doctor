@@ -58,8 +58,12 @@ if command -v termux-battery-status >/dev/null 2>&1; then
     fi
 fi
 
-[ -d "$PREFIX/var/lib/proot-distro/installed-rootfs/debian" ] \
-    && ok "debian" || bad "debian" "not installed, run: proot-distro install debian"
+# functional check: the rootfs path has moved between proot-distro versions
+if proot-distro login debian -- true >/dev/null 2>&1; then
+    ok "debian" "logs in"
+else
+    bad "debian" "not usable, run: proot-distro install debian"
+fi
 
 # --- reachability -----------------------------------------------------------
 LAN=$(ifconfig wlan0 2>/dev/null | awk '/inet /{print $2}')

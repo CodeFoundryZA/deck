@@ -80,11 +80,12 @@ grep -q 'deck:' "$HOME/.bashrc" 2>/dev/null || \
 : > "$DECK_HOME/running"
 
 # --- debian -----------------------------------------------------------------
-if [ -d "$PREFIX/var/lib/proot-distro/installed-rootfs/debian" ]; then
+# Do not probe for a rootfs path: proot-distro has moved it between versions.
+# Just attempt the install and treat "already exists" as success. Never fatal,
+# because a missing Debian must not abort provisioning of everything after it.
+say "debian"
+if proot-distro install debian 2>&1 | tee /dev/stderr | grep -qi "already exists"; then
     say "debian already installed"
-else
-    say "debian (slow, several minutes)"
-    proot-distro install debian
 fi
 
 # --- go ---------------------------------------------------------------------
