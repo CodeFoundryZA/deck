@@ -66,13 +66,22 @@ else
 fi
 
 # --- reachability -----------------------------------------------------------
-LAN=$(ifconfig wlan0 2>/dev/null | awk '/inet /{print $2}')
-[ -z "$LAN" ] && LAN=$(ip addr show wlan0 2>/dev/null | awk '/inet /{sub(/\/.*/,"",$2); print $2}')
-[ -n "$LAN" ] && ok "lan" "$LAN" || note "lan" "no wlan0 address (on mobile data?)"
-
-TS=$(ifconfig tun0 2>/dev/null | awk '/inet /{print $2}')
-[ -n "$TS" ] && ok "tailscale" "$TS" \
-             || note "tailscale" "no tun0, enable always-on VPN in the Tailscale app"
+# Enumerating interfaces is blocked for unrooted apps on modern Android, so
+# ifconfig and ip both come back empty even when the network is fine. When we
+# are invoked over ssh, use the address the client actually reached us on.
+# That is the only address that matters anyway.
+HERE=""
+if [ -n "${SSH_CONNECTION:-}" ]; then
+    HERE=$(printf '%s' "$SSH_CONNECTION" | awk '{print $3}')
+    FROM=$(printf '%s' "$SSH_CONNECTION" | awk '{print $1}')
+    ok "reachable" "$HERE  (client came from $FROM)"
+    case "$HERE" in
+        100.*) ok "tailscale" "answering on the tailnet" ;;
+        *)     note "tailscale" "answered on $HERE, not a 100.x tailnet address" ;;
+    esac
+else
+    note "reachable" "run doctor over ssh and it will report which address answered"
+fi
 
 # --- things a script cannot check -------------------------------------------
 printf '\n\033[1mverify by hand\033[0m\n\n'
@@ -82,8 +91,11 @@ printf '  [ ] Termux:Boot has been opened once, manually\n'
 printf '  [ ] reboot, 2-3 hours screen-off, then SSH in\n'
 
 printf '\n\033[1mconnect\033[0m\n\n'
-[ -n "$LAN" ] && printf '  ssh -p 8022 %s@%s\n' "$USER_NAME" "$LAN"
-[ -n "$TS"  ] && printf '  ssh -p 8022 %s@%s\n' "$USER_NAME" "$TS"
+if [ -n "$HERE" ]; then
+    printf '  ssh -p 8022 %s@%s\n' "$USER_NAME" "$HERE"
+else
+    printf '  ssh -p 8022 %s@<tailnet-ip>\n' "$USER_NAME"
+fi
 
 if [ "$FAIL" -eq 0 ]; then
     printf '\n\033[32mall automated checks passed\033[0m\n\n'

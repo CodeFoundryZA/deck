@@ -125,6 +125,7 @@ a fully working phone in exchange for a Linux guest with walls.
 | No iptables/nftables | No NAT or firewall rules in Linux | Android owns routing and NAT |
 | No raw sockets | nmap is TCP-connect only, no tcpdump capture, no ARP tooling | Accept it; recon is inventory, not packet work |
 | No monitor mode | No wifi injection, ever | Not solvable on this hardware |
+| No interface enumeration | `ifconfig`/`ip` return nothing, cannot read own IPs | Use `$SSH_CONNECTION`, or ask Android |
 | No NNAPI from proot | ML inference is CPU-only | Nano models at 1-2 fps, or do it in an Android app |
 | microSD shares SIM 2 slot | Card or dual SIM, not both | Choose the card |
 | No DP Alt Mode | No wired external display, at all | The laptop is the screen |
