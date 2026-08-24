@@ -7,6 +7,17 @@
 
 mode_enter base
 
-# (no mode-specific services: base IS the always-on set)
+# Android apps started by a mode cannot be reliably stopped from here:
+# `am force-stop` needs a signature-level permission an unrooted app does not
+# have. We try anyway (harmless when it fails) and tell the truth if it did not
+# work, rather than silently leaving the camera running.
+if pidof com.pas.webcam >/dev/null 2>&1 || [ -n "$(pgrep -f com.pas.webcam 2>/dev/null)" ]; then
+    am force-stop com.pas.webcam >/dev/null 2>&1
+    sleep 1
+    if curl -s -m 2 -o /dev/null http://127.0.0.1:8080/ 2>/dev/null; then
+        printf '\n  note: IP Webcam is still serving. Stop it from its own\n'
+        printf '        notification: Android will not let us kill it.\n\n'
+    fi
+fi
 
 notify_update

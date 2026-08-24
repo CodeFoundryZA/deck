@@ -48,7 +48,7 @@ Read the "Adding a mode" section of DESIGN.md first. The short version:
 | Mode | State |
 |---|---|
 | `base` | done |
-| `camera` | next, needs IP Webcam via Aurora Store |
+| `camera` | done, needs IP Webcam installed via Aurora Store |
 | `tracker` | needs a SIM |
 | `docked` | when other modes are producing data worth processing |
 | `car` | when a WiFi ELM327 arrives. No camera, see DESIGN.md |

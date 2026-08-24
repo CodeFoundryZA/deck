@@ -32,7 +32,7 @@ say "provisioning $DECK_NAME"
 # --- packages ---------------------------------------------------------------
 say "packages"
 pkg update -y
-pkg install -y openssh mosh termux-api proot-distro termux-services jq git
+pkg install -y openssh mosh termux-api proot-distro termux-services jq git curl
 
 # --- storage ----------------------------------------------------------------
 # termux-setup-storage raises an Android dialog that someone must physically

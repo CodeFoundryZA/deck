@@ -1,0 +1,49 @@
+#!/data/data/com.termux/files/usr/bin/sh
+# camera: placed somewhere, watching.
+#
+# IP Webcam (com.pas.webcam) owns the camera, because Android will not hand
+# /dev/video0 to Linux. We start it, verify its HTTP server actually came up,
+# and report the URL. DESIGN.md rule 1: Android owns hardware.
+
+. "$HOME/.deck/lib/common.sh"
+
+PKG=com.pas.webcam
+PORT=8080
+
+mode_enter camera
+
+OUT=$(am start -n "$PKG/.Rolling" 2>&1)
+case "$OUT" in
+    *[Ee]rror*)
+        deck_log "camera: could not start $PKG"
+        printf '\n  could not start IP Webcam:\n    %s\n\n' "$OUT"
+        printf '  If it is not installed: get Aurora Store from F-Droid,\n'
+        printf '  then pull "IP Webcam" with it.\n\n'
+        printf 'base\n' > "$DECK_MODE_FILE"
+        notify_update
+        exit 1
+        ;;
+esac
+
+# Wait for the HTTP server rather than assuming the activity start worked.
+i=0
+while [ "$i" -lt 20 ]; do
+    curl -s -m 2 -o /dev/null "http://127.0.0.1:$PORT/" && break
+    i=$((i + 1))
+    sleep 1
+done
+
+if [ "$i" -ge 20 ]; then
+    deck_log "camera: no answer on $PORT after 20s"
+    printf '\n  IP Webcam started but nothing answered on port %s.\n' "$PORT"
+    printf '  Open the app once and check its port, and that the server is set to start.\n\n'
+else
+    deck_log "camera: serving on $PORT"
+    HERE=$(printf '%s' "${SSH_CONNECTION:-}" | awk '{print $3}')
+    printf '\n  camera up on port %s\n\n' "$PORT"
+    [ -n "$HERE" ] && printf '    http://%s:%s/\n\n' "$HERE" "$PORT"
+    printf '  Reachable from anywhere on the tailnet. Do not port forward it.\n'
+    printf '  Set a username and password inside IP Webcam before you rely on this.\n\n'
+fi
+
+notify_update

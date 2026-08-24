@@ -126,6 +126,7 @@ a fully working phone in exchange for a Linux guest with walls.
 | No raw sockets | nmap is TCP-connect only, no tcpdump capture, no ARP tooling | Accept it; recon is inventory, not packet work |
 | No monitor mode | No wifi injection, ever | Not solvable on this hardware |
 | No interface enumeration | `ifconfig`/`ip` return nothing, cannot read own IPs | Use `$SSH_CONNECTION`, or ask Android |
+| Cannot stop an Android app | `am force-stop` is signature-level; a mode can start an app but not kill it | Stop it from its own notification |
 | No NNAPI from proot | ML inference is CPU-only | Nano models at 1-2 fps, or do it in an Android app |
 | microSD shares SIM 2 slot | Card or dual SIM, not both | Choose the card |
 | No DP Alt Mode | No wired external display, at all | The laptop is the screen |

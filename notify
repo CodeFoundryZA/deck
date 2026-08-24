@@ -14,4 +14,6 @@ termux-notification \
     --priority low \
     --title "$DECK_NAME: $MODE" \
     --content "battery ${BATT}%" \
-    --button1 "Refresh" --button1-action "$HOME/.deck/notify"
+    --button1 "Base"    --button1-action "$HOME/.shortcuts/Base" \
+    --button2 "Camera"  --button2-action "$HOME/.shortcuts/Camera" \
+    --button3 "Refresh" --button3-action "$HOME/.deck/notify"
