@@ -63,8 +63,16 @@ Tap **Allow** when the storage permission dialog appears.
 
 ## 8. Widget
 
+- [ ] Settings → Apps → **Termux** → **Appear on top** → **on**
+
+  Required. Android blocks background apps from starting activities, so without
+  it a widget tap fails with a "display over other apps" prompt instead of
+  running the script. On One UI it may live under Apps → ⋮ → Special access →
+  Appear on top.
+
 - [ ] Long-press home screen → Widgets → **Termux:Widget** → place it
 - [ ] Mode scripts appear as tappable icons automatically
+- [ ] Tap **Base** once to confirm it runs and the notification updates
 
 ## 9. Wallpaper
 
