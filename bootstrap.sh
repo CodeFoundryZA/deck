@@ -11,7 +11,8 @@ REPO="$(cd "$(dirname "$0")" && pwd)"
 DECK_HOME="$HOME/.deck"
 
 say() { printf '\033[1;36m==>\033[0m %s\n' "$*"; }
-die() { printf '\033[1;31mxx\033[0m %s\n' "$*" >&2; exit 1; }
+die()  { printf '\033[1;31mxx\033[0m %s\n' "$*" >&2; exit 1; }
+warn() { printf '\033[1;33m!!\033[0m %-11s %s\n' "$1" "${2:-}" >&2; }
 
 [ -d /data/data/com.termux ] || die "must run inside Termux"
 
@@ -33,11 +34,20 @@ say "packages"
 pkg update -y
 pkg install -y openssh mosh termux-api proot-distro termux-services jq git
 
-# --- storage (shows an Android permission dialog: tap Allow) ----------------
+# --- storage ----------------------------------------------------------------
+# termux-setup-storage raises an Android dialog that someone must physically
+# tap. Over ssh nobody taps it, it silently does nothing, and ~/storage never
+# appears. Detect that and tell the operator rather than failing quietly.
 if [ ! -d "$HOME/storage" ]; then
-    say "storage permission"
-    termux-setup-storage
-    sleep 3
+    if [ -n "${SSH_CONNECTION:-}" ]; then
+        warn "storage" "run 'termux-setup-storage' in the Termux app on the device and tap Allow"
+    else
+        say "storage permission"
+        termux-setup-storage
+        sleep 3
+    fi
+else
+    say "storage ok"
 fi
 
 # --- layout -----------------------------------------------------------------

@@ -36,6 +36,12 @@ fi
 [ -f "$HOME/.deck/lib/common.sh" ] && ok "common" || bad "common" "~/.deck/lib/common.sh missing"
 [ -x "$HOME/.deck/notify" ]        && ok "notify" || bad "notify" "~/.deck/notify missing or not executable"
 
+if [ -d "$HOME/storage" ]; then
+    ok "storage" "shared storage linked"
+else
+    bad "storage" "run 'termux-setup-storage' in the Termux app on the device, needs a tap"
+fi
+
 MODES=$(ls "$HOME/.shortcuts" 2>/dev/null | tr '\n' ' ')
 [ -n "$MODES" ] && ok "modes" "$MODES" || bad "modes" "~/.shortcuts is empty, widget will show nothing"
 
