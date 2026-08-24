@@ -94,9 +94,11 @@ grep -q 'deck:' "$HOME/.bashrc" 2>/dev/null || \
 # Just attempt the install and treat "already exists" as success. Never fatal,
 # because a missing Debian must not abort provisioning of everything after it.
 say "debian"
-if proot-distro install debian 2>&1 | tee /dev/stderr | grep -qi "already exists"; then
-    say "debian already installed"
-fi
+_deb=$(proot-distro install debian 2>&1) || true
+case "$_deb" in
+    *"already exists"*) say "debian already installed" ;;
+    *)                  [ -n "$_deb" ] && printf '%s\n' "$_deb" ;;
+esac
 
 # --- go ---------------------------------------------------------------------
 say "entering base mode"

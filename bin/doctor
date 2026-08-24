@@ -106,6 +106,7 @@ fi
 if [ "$FAIL" -eq 0 ]; then
     printf '\n\033[32mall automated checks passed\033[0m\n\n'
 else
-    printf '\n\033[31msomething is wrong above. fix it in the repo, then re-run bootstrap.sh\033[0m\n\n'
+    printf '\n\033[31m%s\033[0m\n\n' "something above needs attention. each FAIL line says what to do."
+
 fi
 exit "$FAIL"
