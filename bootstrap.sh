@@ -47,6 +47,7 @@ printf 'DECK_NAME=%s\n' "$DECK_NAME" > "$DECK_HOME/deck.conf"
 
 install -m 644 "$REPO/lib/common.sh" "$DECK_HOME/lib/common.sh"
 install -m 700 "$REPO/notify"        "$DECK_HOME/notify"
+install -m 700 "$REPO/bin/doctor"    "$DECK_HOME/doctor"
 
 # --- modes -> ~/.shortcuts (Termux:Widget reads this dir, shows filenames) ---
 say "modes"

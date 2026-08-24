@@ -1,0 +1,89 @@
+#!/data/data/com.termux/files/usr/bin/sh
+# deck doctor: verify a provisioned deck. Exits non-zero if anything is wrong.
+#
+#   ~/.deck/doctor        (installed)
+#   ./bin/doctor          (from the repo)
+
+FAIL=0
+ok()   { printf '  \033[32m ok \033[0m %-11s %s\n' "$1" "${2:-}"; }
+bad()  { printf '  \033[31mFAIL\033[0m %-11s %s\n' "$1" "${2:-}"; FAIL=1; }
+note() { printf '  \033[33m -- \033[0m %-11s %s\n' "$1" "${2:-}"; }
+
+printf '\n\033[1mdeck doctor\033[0m\n\n'
+
+# --- identity ---------------------------------------------------------------
+USER_NAME=$(whoami)
+ok "user" "$USER_NAME"
+
+if [ -f "$HOME/.deck/deck.conf" ]; then
+    . "$HOME/.deck/deck.conf"
+    ok "name" "${DECK_NAME:-unset}"
+else
+    bad "name" "~/.deck/deck.conf missing, re-run bootstrap.sh"
+fi
+
+# --- state ------------------------------------------------------------------
+if [ -f "$HOME/.deck/mode" ]; then
+    ok "mode" "$(cat "$HOME/.deck/mode")"
+else
+    bad "mode" "~/.deck/mode missing"
+fi
+
+[ -f "$HOME/.deck/running" ] && ok "running" "registry present" \
+                             || bad "running" "~/.deck/running missing"
+
+# --- installed files --------------------------------------------------------
+[ -f "$HOME/.deck/lib/common.sh" ] && ok "common" || bad "common" "~/.deck/lib/common.sh missing"
+[ -x "$HOME/.deck/notify" ]        && ok "notify" || bad "notify" "~/.deck/notify missing or not executable"
+
+MODES=$(ls "$HOME/.shortcuts" 2>/dev/null | tr '\n' ' ')
+[ -n "$MODES" ] && ok "modes" "$MODES" || bad "modes" "~/.shortcuts is empty, widget will show nothing"
+
+BOOT=$(ls "$HOME/.termux/boot" 2>/dev/null | tr '\n' ' ')
+[ -n "$BOOT" ] && ok "boot" "$BOOT" || bad "boot" "~/.termux/boot is empty, nothing starts on reboot"
+
+# --- services ---------------------------------------------------------------
+SSHD=$(pgrep -x sshd 2>/dev/null | head -1)
+[ -n "$SSHD" ] && ok "sshd" "pid $SSHD, port 8022" || bad "sshd" "not running"
+
+command -v termux-battery-status >/dev/null 2>&1 \
+    && ok "termux-api" || bad "termux-api" "package missing, notify will not work"
+
+if command -v termux-battery-status >/dev/null 2>&1; then
+    BATT=$(timeout 5 termux-battery-status 2>/dev/null | jq -r '.percentage // empty')
+    if [ -n "$BATT" ]; then
+        ok "api bridge" "battery ${BATT}%"
+    else
+        bad "api bridge" "Termux:API app not installed, or not from the same source as Termux"
+    fi
+fi
+
+[ -d "$PREFIX/var/lib/proot-distro/installed-rootfs/debian" ] \
+    && ok "debian" || bad "debian" "not installed, run: proot-distro install debian"
+
+# --- reachability -----------------------------------------------------------
+LAN=$(ifconfig wlan0 2>/dev/null | awk '/inet /{print $2}')
+[ -z "$LAN" ] && LAN=$(ip addr show wlan0 2>/dev/null | awk '/inet /{sub(/\/.*/,"",$2); print $2}')
+[ -n "$LAN" ] && ok "lan" "$LAN" || note "lan" "no wlan0 address (on mobile data?)"
+
+TS=$(ifconfig tun0 2>/dev/null | awk '/inet /{print $2}')
+[ -n "$TS" ] && ok "tailscale" "$TS" \
+             || note "tailscale" "no tun0, enable always-on VPN in the Tailscale app"
+
+# --- things a script cannot check -------------------------------------------
+printf '\n\033[1mverify by hand\033[0m\n\n'
+printf '  [ ] notification reads "%s: %s"\n' "${DECK_NAME:-DECK}" "$(cat "$HOME/.deck/mode" 2>/dev/null)"
+printf '  [ ] Termux, Termux:API, Tailscale all set to Unrestricted battery\n'
+printf '  [ ] Termux:Boot has been opened once, manually\n'
+printf '  [ ] reboot, 2-3 hours screen-off, then SSH in\n'
+
+printf '\n\033[1mconnect\033[0m\n\n'
+[ -n "$LAN" ] && printf '  ssh -p 8022 %s@%s\n' "$USER_NAME" "$LAN"
+[ -n "$TS"  ] && printf '  ssh -p 8022 %s@%s\n' "$USER_NAME" "$TS"
+
+if [ "$FAIL" -eq 0 ]; then
+    printf '\n\033[32mall automated checks passed\033[0m\n\n'
+else
+    printf '\n\033[31msomething is wrong above. fix it in the repo, then re-run bootstrap.sh\033[0m\n\n'
+fi
+exit "$FAIL"
